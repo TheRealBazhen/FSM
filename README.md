@@ -1,4 +1,4 @@
-#Finite State Machine project
+# Finite State Machine project
 
 Инструмент для работы с конечными автоматами. Планируемый функционал:
 * Детерминизация автомата
