@@ -3,6 +3,7 @@
 #include "state_machine.h"
 
 void PrintStateMachine(const fsm::StateMachine& machine) {
+    std::cout << "Machine size: " << machine.GetNumStates() << std::endl;
     std::cout << "Final states: ";
     for (auto s : machine.GetFinalStates()) {
         std::cout << s << " ";
@@ -26,27 +27,39 @@ void PrintStateMachine(const fsm::StateMachine& machine) {
     }
 }
 
-int main() {
-    fsm::StateMachine m(6);
-    char a = 'a', b = 'b', e = '\0';
-    m.AddTransfer(0, 1, a);
-    m.AddTransfer(1, 2, a);
-    m.AddTransfer(1, 3, b);
-    m.AddTransfer(1, 4, e);
-    m.AddTransfer(2, 1, b);
-    m.AddTransfer(3, 1, a);
-    m.AddTransfer(4, 4, a);
-    m.AddTransfer(4, 5, b);
-    m.AddTransfer(4, 0, e);
-    m.AddTransfer(5, 4, a);
-    m.AddFinalState(4);
-    auto single_transfers = fsm::RemoveEmptyTransfers(m);
-    auto det = fsm::BuildDeterminedMachine(single_transfers);
-    auto min = fsm::Minimize(det);
+void TestSample() {
+    // sample from seminar
+    fsm::StateMachine source(6);
+    uint8_t a = 'a', b = 'b', e = fsm::StateMachine::empty_transfer_symbol;
+    source.AddTransfer(0, 1, a);
+    source.AddTransfer(1, 2, a);
+    source.AddTransfer(1, 3, b);
+    source.AddTransfer(1, 4, e);
+    source.AddTransfer(2, 1, b);
+    source.AddTransfer(3, 1, a);
+    source.AddTransfer(4, 4, a);
+    source.AddTransfer(4, 5, b);
+    source.AddTransfer(4, 0, e);
+    source.AddTransfer(5, 4, a);
+    source.AddFinalState(4);
+    auto single_transfers = fsm::RemoveEmptyTransfers(source);
+    auto determined = fsm::BuildDeterminedMachine(single_transfers);
+    auto minimized = fsm::Minimize(determined);
 
     std::cout << "Source\n";
-    PrintStateMachine(m);
+    PrintStateMachine(source);
+
+    std::cout << "\nSingle-letter transfers\n";
+    PrintStateMachine(single_transfers);
+
+    std::cout << "\nDetermined\n";
+    PrintStateMachine(determined);
+
     std::cout << "\nResult\n";
-    PrintStateMachine(min);
+    PrintStateMachine(minimized);
+}
+
+int main() {
+    TestSample();
     return 0;
 }
